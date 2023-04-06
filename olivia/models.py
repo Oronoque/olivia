@@ -1,6 +1,6 @@
-from django.contrib.auth.models import AbstractUser, Group, Permission
 from django.db import models
-
+from django.contrib.auth.models import AbstractUser, Group, Permission
+from django.contrib.auth import get_user_model
 
 class User(AbstractUser):
     groups = models.ManyToManyField(
@@ -11,7 +11,7 @@ class User(AbstractUser):
 
 class Routine(models.Model):
     name = models.CharField(max_length=100)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
 
     def __str__(self) -> str:
         return self.name
