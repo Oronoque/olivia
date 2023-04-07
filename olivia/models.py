@@ -23,6 +23,6 @@ class RoutineSteps(models.Model):
     start_time = models.TimeField()
     end_time = models.TimeField()
     complete = models.BooleanField(default=False)
-
+    order = models.IntegerField()
     def __str__(self) -> str:
         return self.description

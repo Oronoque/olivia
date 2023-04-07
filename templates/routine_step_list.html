@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1>{{ routine.name }} routine:</h1>
+  <h2>Steps:</h2><br>
+
+  <ul id="step-list" class="list-group">
+    {% for step in steps %}
+      <li class="list-group-item" data-id="{{ step.id }}">
+        <div class="step-wrapper">
+          <i class="fas fa-check-circle"></i>
+          <span class="step-description">{{ step.description }}</span>
+        </div>
+      </li>
+    {% endfor %}
+  </ul>
+{% endblock %}
+
+{% block scripts %}
+  {{ block.super }}
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/draggable/1.0.0-beta.10/draggable.bundle.js"></script>
+  <script>
+    const stepList = document.getElementById('step-list');
+    new Draggable.Sortable(stepList, {
+      draggable: '.list-group-item',
+      handle: 'span',
+      delay: 200,
+      mirror: {
+        constrainDimensions: true,
+      },
+    });
+
+    const deleteButtons = document.querySelectorAll('.delete-button');
+    deleteButtons.forEach(button => {
+      button.addEventListener('click', () => {
+        const stepId = button.parentNode.dataset.id;
+        fetch(`/routine/step/${stepId}/delete/`, {
+          method: 'DELETE',
+          headers: {
+            'X-CSRFToken': '{{ csrf_token }}',
+          },
+        }).then(() => {
+          button.parentNode.remove();
+        });
+      });
+    });
+  </script>
+
+   <style>
+    .list-group-item {
+      border: none;
+      padding: 10px;
+      margin: 10px 0;
+      background-color: #f7f7f7;
+    }
+
+    .step-wrapper {
+      display: flex;
+      align-items: center;
+    }
+
+    .step-wrapper i {
+      font-size: 20px;
+      margin-right: 10px;
+      color: #28a745;
+    }
+
+    .step-description {
+      flex: 1;
+      font-size: 16px;
+      font-weight: bold;
+    }
+
+
+    .step-description {
+      display: inline-block;
+      padding: 8px;
+      background-color: #130d0d;
+      color: white;
+      border-radius: 4px;
+      margin-right: 8px;
+      font-weight: bold;
+    }
+
+    
+  </style>
+
+{% endblock %}
